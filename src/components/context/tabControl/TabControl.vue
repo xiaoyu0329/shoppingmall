@@ -25,6 +25,7 @@ export default {
   methods:{
     titleClick(index){
        this.currentIndex = index;
+       this.$emit('tabClick',index);
     }
   },
   components: {
@@ -33,7 +34,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .tab-control{
     display:flex;
     text-align: center;
