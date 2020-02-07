@@ -34,6 +34,7 @@ export default {
       isActive(){
           return this.$route.path.indexOf(this.path) !== -1
       },
+      //根据isActive的值变换颜色
       activeStyle(){
           return this.isActive ? {color:this.activeColor} : {}
       }
