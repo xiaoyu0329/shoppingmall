@@ -30,15 +30,18 @@
     methods:{
       imgLoad(){
         this.currentLoad += 1;
+        //当图片全部加载完，然后只发送一个事件给父组件提示图片已经加载完成 防抖
+        //否则会每加载完一张图片就告知父组件
         // 写法1
         // if(this.currentLoad == this.detailInfo.detailImage[0].list.length){
         //   this.$emit('imgLoad');
         // }
 
         //写法2 性能更好点 放到下面watch监听
-        if(this.currentLoad == this.imgLength){
-          this.$emit('imgLoad');
-        }
+        // if(this.currentLoad == this.imgLength){
+          this.$emit('detailImgLoad');
+          // this.$bus.$emit('detailImgLoad')//事件总线或者可以用
+        // }
       }
     },
     watch:{

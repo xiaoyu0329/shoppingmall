@@ -1,6 +1,6 @@
 <template>
     <div class="goods-item" @click="detail">
-       <img :src="goodsitem.show.img" @load="imgLoad"/>
+       <img :src="showImg" @load="imgLoad"/>
        <div class="goods-info">
             <p>{{goodsitem.title}}</p>
             <span class="price">{{goodsitem.price}}</span>
@@ -20,6 +20,11 @@ export default {
               return {}
           }
       }
+  },
+  computed:{
+    showImg(){
+      return this.goodsitem.image || this.goodsitem.show.img
+    }
   },
   methods:{
     //@load用于监听图片加载玩成

@@ -57,7 +57,8 @@ export default {
       this.scroll && this.scroll.finishPullUp()
     },
     refresh(){
-      this.scroll && this.scroll.refresh()
+      this.scroll && this.scroll.refresh();
+      // console.log('++++---')
     },
     scrollY(){
       return this.scroll ? this.scroll.y : 0

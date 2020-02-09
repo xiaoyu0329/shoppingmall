@@ -41,8 +41,11 @@ import HomeFeatureView from './childComps/HomeFeatureView'
 
 import {getHomeMultidata,getHomeGoods} from 'network/home'
 import {debounce} from 'common/utils'
+import {itemImgListener,backTopMixin} from 'common/mixin'
+
 export default {
   name: 'Home',
+  mixins :[itemImgListener,backTopMixin],
   components:{
     NavBar,
     HomeSwiper,
@@ -50,7 +53,7 @@ export default {
     HomeFeatureView,
     TabControl,
     GoodsList,
-    Scroll,BackTop
+    Scroll,
   },
   data(){
     return {
@@ -62,10 +65,10 @@ export default {
         'sell':{page:0,list:[]}
       },
       currentTabClick: 'pop',
-      isShow: false,
       offsetTop: 0,
       tabContIsShow: false,
       scrollLen:0,
+      itemImgListener:null,
     }
   },
   activated(){
@@ -77,7 +80,10 @@ export default {
    deactivated(){
      //记录滑动的距离
     // console.log('deactive');
-    this.scrollLen = this.$refs.scroll.scrollY()
+    this.scrollLen = this.$refs.scroll.scrollY();
+
+    //取消监听图片加载
+    this.$bus.$off('imageLoad',this.itemImgListener)
   },
   created(){    
     this.getHomeMultidata();
@@ -89,11 +95,12 @@ export default {
   },
   mounted(){
     this.tabClick(0)
-    //图片加载完成的事件监听
-    const refresh = debounce(this.$refs.scroll.refresh, 100)
-    this.$bus.$on('imageLoad',()=>{
-       refresh();
-    })
+    //图片加载完成的事件监听  放入混入中了mixins
+    // const newrefresh = debounce(this.$refs.scroll.refresh, 100)
+    // this.itemImgListener = ()=>{
+    //    newrefresh();
+    // }
+    // this.$bus.$on('imageLoad',this.itemImgListener)
 
     //获取tabcontrol高度
     // console.log(this.$refs.tabcontrol.$el.offsetTop)
@@ -118,9 +125,6 @@ export default {
       //决定tabControl是否吸顶(position: fixed)
       this.tabContIsShow = Math.abs(position.y)> this.offsetTop;
       // console.log(this.tabContIsShow)
-    },
-    backClick(){
-      this.$refs.scroll.scrollTo(0,0,300);
     },
     // 事件监听
     tabClick(index){
