@@ -1,6 +1,9 @@
 <template>
   <div class="bottom-menu">
-    <check-button class="select-all"></check-button>
+    <check-button class="select-all" 
+    :is-checked="isSelectAll"
+    @click.native="isChecked"
+    ></check-button>
     <span>全选</span>
     <span class="total-price">合计: ¥{{totalPrice}}</span>
     <span class="buy-product">去计算({{checkedLength}})</span>
@@ -27,9 +30,31 @@
       checkedLength(){
          const cartList = this.$store.state.cartList;
         return cartList.filter(item => item.checked).length
+      },
+      isSelectAll(){
+        const cartList = this.$store.state.cartList;
+        if(cartList.length === 0) return false;
+        //方法1
+        // return !cartList.filter(item => !item.checked).length
+
+        //方法2  只要找到一个就返回  比上面遍历每一个性能要好
+        return !cartList.find(item => !item.checked)
+
+        //方法3
+
       }
     },
-    
+    methods:{
+      //点击全选，分两种情况
+      isChecked(){
+         const cartList = this.$store.state.cartList;
+        if(this.isSelectAll){//全部选中,点击后全不选中
+          cartList.forEach(item => item.checked = false)
+        }else{//部分选中或者全部不选中,点击后全选中
+          cartList.forEach(item => item.checked = true)
+        }
+      }
+    }
 	}
 </script>
 

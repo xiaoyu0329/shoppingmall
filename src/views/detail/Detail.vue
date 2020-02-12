@@ -15,6 +15,7 @@
     </scroll>
     <detail-bottom-bar @addCart="addCart"></detail-bottom-bar>
     <back-top @click.native="backClick" v-show="isShow"></back-top>
+    <toast :message="message" :show="show"></toast>
 </div>   
 </template>
 
@@ -30,10 +31,13 @@ import DetailBottomBar from './detailChild/DetailBottomBar'
 
 import Scroll from 'components/common/scroll/Scroll'
 import GoodsList from 'components/context/goods/GoodsList'
+import Toast from 'components/common/toast/Toast'
 
 import {getDetailSwiper,Goods,Shop,GoodsParam,getRecommend} from 'network/detail'
 import {debounce} from 'common/utils'
 import {itemImgListener,backTopMixin} from 'common/mixin'
+
+import {mapActions} from 'vuex'
 
 export default {
   name: 'Detail',
@@ -52,6 +56,8 @@ export default {
         titleTopYs:[],
         getTitleTopYs:'',
         currentIndex:'',
+        message:'',
+        show:false,
     }
   },
   created(){
@@ -111,6 +117,7 @@ export default {
     this.$bus.$off('imageLoad',this.itemImgListener)
   },
   methods:{
+    ...mapActions(['addCart']),
     detailImgLoad(){
       // this.$refs.scroll.refresh();//使用这个图片有几张就会加载几张
       //防抖
@@ -157,7 +164,16 @@ export default {
        product.desc = this.goods.desc;
        product.newPrice = this.goods.newPrice;
       //  this.$store.commit('addCart',product);
-      this.$store.dispatch('addCart',product)
+      //方法1 
+      // this.$store.dispatch('addCart',product).then(res=>{
+      //   console.log(res)
+      // })
+
+      //方法2  使用了mapActions，将直接映射到detail此页面中了
+        this.addCart(product).then(res => {
+          console.log(11111)
+          // console.log(res)
+        }) //用这个方法报错 还没找到原因
     }
   },
   components:{
@@ -171,6 +187,7 @@ export default {
      DetailCommentInfo,
      GoodsList,
      DetailBottomBar,
+     Toast
   }
 }
 </script>
